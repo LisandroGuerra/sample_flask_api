@@ -1,16 +1,20 @@
+'''API RESTful tasks'''
 from flask import Flask, request, jsonify
 from models.task import Task
 
 app = Flask(__name__)
 
 tasks = []
-task_id_control = 1
 
 @app.route('/tasks', methods=['POST'])
-def create_task():
-    global task_id_control
+def create_task(task_id_control=1):
+    '''Create a task'''
     data = request.get_json()
-    new_task = Task(id=task_id_control ,title=data['title'], description=data.get('description', ''))
+    new_task = Task(
+        id=task_id_control,
+        title=data['title'],
+        description=data.get('description', '')
+        )
     task_id_control += 1
     tasks.append(new_task)
     print(tasks)
@@ -19,6 +23,7 @@ def create_task():
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
+    '''Get all tasks'''
     tasks_list = [task.to_dict() for task in tasks]
 
     output = {
@@ -30,6 +35,7 @@ def get_tasks():
 
 @app.route('/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
+    '''Get a task by id'''
     for task in tasks:
         if task.id == task_id:
             return jsonify(task.to_dict()), 200
@@ -37,6 +43,7 @@ def get_task(task_id):
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
+    '''Update a task'''
     data = request.get_json()
     for task in tasks:
         if task.id == task_id:
@@ -48,7 +55,8 @@ def update_task(task_id):
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    for task in tasks:
+    '''Delete a task'''
+    for task in tasks.copy():
         if task.id == task_id:
             tasks.remove(task)
             return jsonify({"message": "Task deleted successfully"}), 200
