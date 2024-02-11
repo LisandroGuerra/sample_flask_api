@@ -5,10 +5,12 @@ from models.task import Task
 app = Flask(__name__)
 
 tasks = []
+task_id_control = 1
 
 @app.route('/tasks', methods=['POST'])
-def create_task(task_id_control=1):
+def create_task():
     '''Create a task'''
+    global task_id_control
     data = request.get_json()
     new_task = Task(
         id=task_id_control,
