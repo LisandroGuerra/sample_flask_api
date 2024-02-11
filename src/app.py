@@ -5,12 +5,12 @@ from models.task import Task
 app = Flask(__name__)
 
 tasks = []
-task_id_control = 1
+task_id_control = 1 # pylint: disable=invalid-name
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
     '''Create a task'''
-    global task_id_control
+    global task_id_control # pylint: disable=global-statement
     data = request.get_json()
     new_task = Task(
         id=task_id_control,
